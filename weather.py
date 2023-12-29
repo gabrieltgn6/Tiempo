@@ -1,6 +1,7 @@
 import requests
 import openpyxl
 from pprint import pprint
+import os
 
 API_Key = "6f87c7db27d128776085cc14992324ef"
 
@@ -13,9 +14,19 @@ weather_data = requests.get(base_url).json()
 # Imprimir los datos obtenidos
 pprint(weather_data)
 
-# Crear un archivo Excel y escribir los datos
-workbook = openpyxl.Workbook()
-sheet = workbook.active
+# Nombre del archivo Excel
+excel_file = f'{city}_weather_data.xlsx'
+
+# Si el archivo ya existe, cargar el libro de trabajo existente
+if os.path.exists(excel_file):
+    workbook = openpyxl.load_workbook(excel_file)
+    sheet = workbook.active
+else:
+    # Si el archivo no existe, crear uno nuevo
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    # Escribir encabezados si es un nuevo archivo
+    sheet.append(["Key", "Value"])
 
 # Escribir los datos en el archivo Excel
 for key, value in weather_data.items():
@@ -25,6 +36,6 @@ for key, value in weather_data.items():
     sheet.append([key, value])
 
 # Guardar el archivo Excel
-workbook.save(f'{city}_weather_data.xlsx')
+workbook.save(excel_file)
 
-print(f"Datos guardados en {city}_weather_data.xlsx")
+print(f"Datos agregados a {excel_file}")
