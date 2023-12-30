@@ -28,12 +28,19 @@ else:
     # Escribir encabezados si es un nuevo archivo
     sheet.append(["Key", "Value"])
 
+# Encontrar la primera fila vacía en la columna A
+first_empty_row = 1
+while sheet.cell(row=first_empty_row, column=1).value is not None:
+    first_empty_row += 1
+
 # Escribir los datos en el archivo Excel
 for key, value in weather_data.items():
     # Convertir las listas y diccionarios a cadenas antes de escribirlos en Excel
     if isinstance(value, (list, dict)):
         value = str(value)
-    sheet.append([key, value])
+    sheet.cell(row=first_empty_row, column=1, value=key)
+    sheet.cell(row=first_empty_row, column=2, value=value)
+    first_empty_row += 1
 
 # Guardar el archivo Excel
 workbook.save(excel_file)
